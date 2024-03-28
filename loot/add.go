@@ -1,7 +1,7 @@
 package loot
 
 const (
-	defaultLootBoxFile = "js.loot"
+	DefaultLootBoxFile = "jsloot.txt"
 )
 
 // AddToFile adds the given URLs to the lootbox file

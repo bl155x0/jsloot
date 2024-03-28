@@ -1,10 +1,1 @@
-* jsloot fetch -f <FILE> ...should be jsloot fetch <FILE> without the  -f
-  -> detect if given file is a file or dir 
-  -> if omitted  look for js.loot in the current dir
-* similiar for jsloot add: Enhance so that we dont have two flags d and f, but only one and mode is discoverd automaticall 
-  by detecting if the given argument is a jsloot file or jsloot directory
-* switch from js.loot to jsloot
-* Docu update
-* have a nice ASCII Art 
-
-* can we loot inline javascript from html files?
+* Can we loot inline javascript from HTML files?

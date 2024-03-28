@@ -1,7 +1,5 @@
 package loot
 
-import "fmt"
-
 var verbose bool = false
 
 func IsVerbose() bool {
@@ -9,9 +7,6 @@ func IsVerbose() bool {
 }
 
 func SetVerbose(v bool) {
-	if v == true {
-		fmt.Println("I'll be more verbose...")
-	}
 	verbose = v
 }
 

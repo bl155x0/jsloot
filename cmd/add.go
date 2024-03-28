@@ -13,10 +13,9 @@ import (
 
 // addCmd represents the spot command
 var addCmd = &cobra.Command{
-	Use:   "add",
-	Short: "Adds URLs to the lootbox",
+	Use:   "add [URL1..URLn]",
+	Short: "Appends URLs to a file",
 	Run: func(cmd *cobra.Command, args []string) {
-		handleVerbose(cmd)
 		lootBoxFile, err := cmd.Flags().GetString("file")
 		cobra.CheckErr(err)
 		if lootBoxFile == "" {
@@ -24,6 +23,7 @@ var addCmd = &cobra.Command{
 			cmd.Usage()
 			os.Exit(-1)
 		}
+		handleVerbose(cmd)
 		if lootBoxFile != "" {
 			cobra.CheckErr(loot.AddToFile(lootBoxFile, args))
 		}
@@ -31,6 +31,5 @@ var addCmd = &cobra.Command{
 }
 
 func init() {
-	addCmd.Flags().StringP("file", "f", "", "The lootbox file to store spotted URLs")
-	rootCmd.AddCommand(addCmd)
+	addCmd.Flags().StringP("file", "f", "", "The file to append the URLs to")
 }

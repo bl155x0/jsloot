@@ -16,6 +16,14 @@ type downloadResult struct {
 }
 
 func FetchFromFile(filename string, beautify bool) error {
+	exists, err := fileExists(filename)
+	if err != nil {
+		return err
+	}
+	if exists == false {
+		return fmt.Errorf("no such file %s", filename)
+
+	}
 	files, err := readLinesFromFile(filename)
 	if err != nil {
 		return err
@@ -31,7 +39,9 @@ func FetchFromFile(filename string, beautify bool) error {
 }
 
 func fetchAll(urls []string, targetDirectory string, beautify bool) {
-	fmt.Println("Fetching into " + targetDirectory)
+	doIfVerbose(func() {
+		fmt.Println("Fetching into " + targetDirectory + "...")
+	})
 	for _, file := range urls {
 		result, err := fetch(file, targetDirectory)
 		if err != nil {
@@ -54,6 +64,9 @@ func fetchAll(urls []string, targetDirectory string, beautify bool) {
 			}
 		}
 	}
+	doIfVerbose(func() {
+		fmt.Println("Finished")
+	})
 }
 
 func fetch(urlString string, targetDirectory string) (*downloadResult, error) {
