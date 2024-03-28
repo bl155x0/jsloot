@@ -1,5 +1,3 @@
-* be more quite and have -v to be more verbose.
-  -> by default print only new files downloaded 
 * jsloot fetch -f <FILE> ...should be jsloot fetch <FILE> without the  -f
   -> detect if given file is a file or dir 
   -> if omitted  look for js.loot in the current dir

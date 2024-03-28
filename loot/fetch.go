@@ -31,7 +31,11 @@ func fetchAll(urls []string, targetDirectory string, beautify bool) {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		} else {
 			if result.downloaded == true {
-				fmt.Printf("Download complete: %s -> %s\n", file, result.fileName)
+				if IsVerbose() {
+					fmt.Printf("Download complete: %s -> %s\n", file, result.fileName)
+				} else {
+					fmt.Printf("%s\n", result.fileName)
+				}
 				if beautify {
 					err := beautifyFile(result.fileName)
 					if err != nil {
@@ -87,7 +91,9 @@ func fetch(urlString string, targetDirectory string) (*downloadResult, error) {
 		return &skippedResult, nil
 	}
 
-	fmt.Printf("Downloading: %s\n", parsedUrl.String())
+	doIfVerbose(func() {
+		fmt.Printf("Downloading: %s\n", parsedUrl.String())
+	})
 	response, err := http.Get(parsedUrl.String())
 	if err != nil {
 		return nil, err

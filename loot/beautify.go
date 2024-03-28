@@ -19,7 +19,9 @@ func beautfyExists() bool {
 }
 
 func beautifyFile(file string) error {
-	fmt.Printf("beautifying %s\n", filepath.Base(file))
+	doIfVerbose(func() {
+		fmt.Printf("beautifying %s\n", filepath.Base(file))
+	})
 	args := []string{"-r", file}
 	cmd := exec.Command(beautifyCommand, args...)
 	err := cmd.Run()
@@ -29,6 +31,8 @@ func beautifyFile(file string) error {
 		}
 		return err
 	}
-	fmt.Printf("%s is beautiful\n", filepath.Base(file))
+	doIfVerbose(func() {
+		fmt.Printf("%s is beautiful\n", filepath.Base(file))
+	})
 	return nil
 }

@@ -6,6 +6,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/bl155x0/jsloot/loot"
 	"github.com/spf13/cobra"
 )
 
@@ -31,4 +32,11 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose")
+}
+
+func handleVerbose(cmd *cobra.Command) {
+	v, e := cmd.Flags().GetBool("verbose")
+	cobra.CheckErr(e)
+	loot.SetVerbose(v)
 }

@@ -16,6 +16,7 @@ var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Adds URLs to the lootbox",
 	Run: func(cmd *cobra.Command, args []string) {
+		handleVerbose(cmd)
 		lootBoxFile, err := cmd.Flags().GetString("file")
 		cobra.CheckErr(err)
 		lootBoxDir, err := cmd.Flags().GetString("directory")

@@ -13,6 +13,7 @@ var fetchCmd = &cobra.Command{
 	Use:   "fetch",
 	Short: "Downloads the JavaScript files specified in the given file",
 	Run: func(cmd *cobra.Command, args []string) {
+		handleVerbose(cmd)
 		fileName, err := cmd.Flags().GetString("file")
 		cobra.CheckErr(err)
 		loot.FetchFromFile(fileName, true)
