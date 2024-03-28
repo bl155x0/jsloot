@@ -19,29 +19,18 @@ var addCmd = &cobra.Command{
 		handleVerbose(cmd)
 		lootBoxFile, err := cmd.Flags().GetString("file")
 		cobra.CheckErr(err)
-		lootBoxDir, err := cmd.Flags().GetString("directory")
-		cobra.CheckErr(err)
-		if lootBoxFile == "" && lootBoxDir == "" {
-			fmt.Fprintf(os.Stderr, "Error: lootbox file or path missing\n")
+		if lootBoxFile == "" {
+			fmt.Fprintf(os.Stderr, "Error: loot file not provided\n")
 			cmd.Usage()
 			os.Exit(-1)
 		}
-		if lootBoxFile != "" && lootBoxDir != "" {
-			fmt.Fprintf(os.Stderr, "Error: lootbox file and path specified while only one is allowed\n")
-			cmd.Usage()
-			os.Exit(-1)
-		}
-
 		if lootBoxFile != "" {
 			cobra.CheckErr(loot.AddToFile(lootBoxFile, args))
-		} else if lootBoxDir != "" {
-			cobra.CheckErr(loot.AddToDir(lootBoxDir, args))
 		}
 	},
 }
 
 func init() {
 	addCmd.Flags().StringP("file", "f", "", "The lootbox file to store spotted URLs")
-	addCmd.Flags().StringP("directory", "d", "", "The lootbox path to store spotted URLs")
 	rootCmd.AddCommand(addCmd)
 }

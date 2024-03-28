@@ -16,7 +16,8 @@ var fetchCmd = &cobra.Command{
 		handleVerbose(cmd)
 		fileName, err := cmd.Flags().GetString("file")
 		cobra.CheckErr(err)
-		loot.FetchFromFile(fileName, true)
+		err = loot.FetchFromFile(fileName, true)
+		cobra.CheckErr(err)
 	},
 }
 

@@ -20,11 +20,18 @@ func FetchFromFile(filename string, beautify bool) error {
 	if err != nil {
 		return err
 	}
-	fetchAll(files, filepath.Dir(filename), beautify)
+
+	targetDirectory := filepath.Dir(filename)
+	err = ensureDirectoryExists(targetDirectory)
+	if err != nil {
+		return err
+	}
+	fetchAll(files, targetDirectory, beautify)
 	return nil
 }
 
 func fetchAll(urls []string, targetDirectory string, beautify bool) {
+	fmt.Println("Fetching into " + targetDirectory)
 	for _, file := range urls {
 		result, err := fetch(file, targetDirectory)
 		if err != nil {
