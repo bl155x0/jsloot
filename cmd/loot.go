@@ -14,7 +14,7 @@ import (
 // lootCmd represents the fetch command
 var lootCmd = &cobra.Command{
 	Use:     "loot",
-	Aliases: []string{"fetch"},
+	Aliases: []string{"fetch", "get"},
 	Short:   "Downloads the JavaScript files specified in the given file",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 0 {
@@ -31,5 +31,5 @@ var lootCmd = &cobra.Command{
 }
 
 func init() {
-	lootCmd.Flags().StringP("file", "f", loot.DefaultLootBoxFile, "The lootbox file to store spotted URLs")
+	lootCmd.Flags().StringP("file", "f", loot.DefaultLootBoxFile, "The file containing the URLs to download")
 }
