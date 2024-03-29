@@ -34,42 +34,43 @@ func FetchFromFile(filename string, beautify bool) error {
 	if err != nil {
 		return err
 	}
-	fetchAll(files, targetDirectory, beautify)
+	FetchAll(files, targetDirectory, beautify)
 	return nil
 }
 
-func fetchAll(urls []string, targetDirectory string, beautify bool) {
+func FetchAll(urls []string, targetDirectory string, beautify bool) {
 	doIfVerbose(func() {
 		fmt.Println("Fetching into " + targetDirectory + "...")
 	})
 	for _, file := range urls {
-		result, err := fetch(file, targetDirectory)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		} else {
-			if result.downloaded == true {
-				if IsVerbose() {
-					fmt.Printf("Download complete: %s -> %s\n", file, result.fileName)
-				} else {
-					fmt.Printf("%s\n", result.fileName)
-				}
-				if beautify {
-					err := beautifyFile(result.fileName)
-					if err != nil {
-						fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-					}
-				}
-			} else {
-				// fmt.Printf("Skipped existing File : %s -> %s\n", file, result.fileName)
-			}
-		}
+		Fetch(file, targetDirectory, beautify)
 	}
 	doIfVerbose(func() {
 		fmt.Println("Finished")
 	})
 }
+func Fetch(url string, targetDirectory string, beautify bool) {
+	result, err := fetchInternal(url, targetDirectory)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+	} else {
+		if result.downloaded == true {
+			if IsVerbose() {
+				fmt.Printf("Download complete: %s -> %s\n", url, result.fileName)
+			} else {
+				fmt.Printf("%s\n", result.fileName)
+			}
+			if beautify {
+				err := beautifyFile(result.fileName)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				}
+			}
+		}
+	}
+}
 
-func fetch(urlString string, targetDirectory string) (*downloadResult, error) {
+func fetchInternal(urlString string, targetDirectory string) (*downloadResult, error) {
 	//ensure schema is present
 	if strings.HasPrefix(strings.ToLower(urlString), "https://") == false &&
 		strings.HasPrefix(strings.ToLower(urlString), "http://") == false {

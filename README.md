@@ -5,7 +5,7 @@
 ## Purpose
 
 The main goal of `jsloot` is to collect, download, and beautify JavaScript files while manually investigating a target with a web proxy. 
-As you browse your target manually, jsloot automatically collects JavaScript URLs to a local file, making them ready for further investigation.
+As you browse your target manually, jsloot automatically downloads or collects JavaScript URLs to a local file, making them ready for further investigation.
 
 ## Setup
 
@@ -29,7 +29,7 @@ https://github.com/bl155x0/caido/tree/main/workflows/passive/JSLoot
 
 
 # Usage
-`jsloot` offers two distinct sub-commands:
+`jsloot` various distinct sub-commands:
 
 
 ### `add`
@@ -37,20 +37,28 @@ The `add` command is used to collect JavaScript URLs while investigating a targe
 It appends JavaScript URLs to a text file (jsloot.txt).
 
 ```bash
-jsloot add -f jsloot.txt http://example.com/main.js
+jsloot add -f jsloot.txt "http://example.com/example.js"
 ```
-If the Caido passive Workflow is installed (see [Caido](#Caido)), this command is executed automatically,
+If the [JSLootAdd](https://github.com/bl155x0/caido/blob/main/workflows/passive/JSLoot/JSLootAdd.json) Caido passive Workflow is installed (see [Caido](#Caido)), this command is executed automatically,
 for every recognized JavaScript file while browsing your target with Caido.
 
-### `loot`
+### `get`
 
-The `loot` command downloads and beautifies all collected JavaScript URLs to a local folder.
+The `get` command downloads and beautifies a specific JavaScript file and beautifies it.
+``` bash
+jsloot get -u "https://www.example.com/example.js"
+```
+
+If the Caido [JSLootGet](https://github.com/bl155x0/caido/blob/main/workflows/passive/JSLoot/JSLootGet.json) Caido passive Workflow is installed (see [Caido](#Caido)), this command is executed automatically,
+for every recognized JavaScript file while browsing your target with Caido.
+
+### `getall`
+
+The `getll` command downloads and beautifies all collected JavaScript URLs from a given file into to a local folder.
 ``` bash
 jsloot loot -f jsloot.txt
 ```
-
-
-
---
-
-happy looting
+<br>
+<hr>
+<br>
+★ ♥ 🐿 ~ HAPPY LOOTING ~

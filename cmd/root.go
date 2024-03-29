@@ -35,7 +35,8 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	rootCmd.AddCommand(addCmd)
-	rootCmd.AddCommand(lootCmd)
+	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(getAllCmd)
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)

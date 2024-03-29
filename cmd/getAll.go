@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 bl155x0
 */
 package cmd
 
@@ -11,11 +11,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// lootCmd represents the fetch command
-var lootCmd = &cobra.Command{
-	Use:     "loot",
-	Aliases: []string{"fetch", "get"},
-	Short:   "Downloads the JavaScript files specified in the given file",
+// getAllCmd represents the fetch command
+var getAllCmd = &cobra.Command{
+	Use:     "getall",
+	Aliases: []string{"get-all", "all", "loot"},
+	Short:   "Downloads all the JavaScript files specified in the given file",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) > 0 {
 			fmt.Fprintf(os.Stderr, "Error: unknown arguments given\n")
@@ -23,6 +23,7 @@ var lootCmd = &cobra.Command{
 			os.Exit(-1)
 		}
 		handleVerbose(cmd)
+		//loot from file
 		fileName, err := cmd.Flags().GetString("file")
 		cobra.CheckErr(err)
 		err = loot.FetchFromFile(fileName, true)
@@ -31,5 +32,5 @@ var lootCmd = &cobra.Command{
 }
 
 func init() {
-	lootCmd.Flags().StringP("file", "f", loot.DefaultLootBoxFile, "The file containing the URLs to download")
+	getAllCmd.Flags().StringP("file", "f", loot.DefaultLootBoxFile, "The file containing the URLs to download")
 }
