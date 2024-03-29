@@ -23,7 +23,7 @@ pip install jsbeautifier
 
 ### Caido
 
-To seamlessly integrate `jsloot` with Caido, install the following passive Workflow to your Caido project:
+To seamlessly integrate `jsloot` with Caido, install one, or all of the following passive Workflows to your Caido project:
 
 https://github.com/bl155x0/caido/tree/main/workflows/passive/JSLoot
 
