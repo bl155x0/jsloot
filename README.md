@@ -44,7 +44,7 @@ for every recognized JavaScript file while browsing your target with Caido.
 
 ### `loot`
 
-The `loot` command downloads and beautifies all collected JavaScript ULRs to a local folder.
+The `loot` command downloads and beautifies all collected JavaScript URLs to a local folder.
 ``` bash
 jsloot loot -f jsloot.txt
 ```
