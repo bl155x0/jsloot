@@ -9,16 +9,18 @@ As you browse your target manually, jsloot automatically downloads or collects J
 
 ## Setup
 
-```bash
-go install github.com/bl155x0/jsloot@latest
-```
-
 ### Dependencies
 
 To beautify JavaScript files, you'll need [jsbeautifier](https://pypi.org/project/jsbeautifier/). Install it with:
 
 ```bash
 pip install jsbeautifier
+```
+
+### Installation
+
+```bash
+go install github.com/bl155x0/jsloot@latest
 ```
 
 ### Caido
