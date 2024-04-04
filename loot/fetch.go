@@ -15,6 +15,10 @@ type downloadResult struct {
 	downloaded bool
 }
 
+var defaultHeaders = map[string]string{
+	"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:124.0) Gecko/20100101 Firefox/124.0",
+}
+
 func FetchFromFile(filename string, beautify bool) error {
 	exists, err := fileExists(filename)
 	if err != nil {
@@ -50,7 +54,7 @@ func FetchAll(urls []string, targetDirectory string, beautify bool) {
 	})
 }
 func Fetch(url string, targetDirectory string, beautify bool) {
-	result, err := fetchInternal(url, targetDirectory)
+	result, err := fetchInternal(url, targetDirectory, defaultHeaders)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 	} else {
@@ -70,7 +74,7 @@ func Fetch(url string, targetDirectory string, beautify bool) {
 	}
 }
 
-func fetchInternal(urlString string, targetDirectory string) (*downloadResult, error) {
+func fetchInternal(urlString string, targetDirectory string, headers map[string]string) (*downloadResult, error) {
 	//ensure schema is present
 	if strings.HasPrefix(strings.ToLower(urlString), "https://") == false &&
 		strings.HasPrefix(strings.ToLower(urlString), "http://") == false {
@@ -115,7 +119,17 @@ func fetchInternal(urlString string, targetDirectory string) (*downloadResult, e
 	doIfVerbose(func() {
 		fmt.Printf("Downloading: %s\n", parsedUrl.String())
 	})
-	response, err := http.Get(parsedUrl.String())
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", parsedUrl.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	for header, value := range headers {
+		req.Header.Set(header, value)
+	}
+
+	response, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
