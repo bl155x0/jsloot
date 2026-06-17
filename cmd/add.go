@@ -4,9 +4,6 @@ Copyright © 2024 bl155x0
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/bl155x0/jsloot/loot"
 	"github.com/spf13/cobra"
 )
@@ -19,9 +16,7 @@ var addCmd = &cobra.Command{
 		lootBoxFile, err := cmd.Flags().GetString("file")
 		cobra.CheckErr(err)
 		if lootBoxFile == "" {
-			fmt.Fprintf(os.Stderr, "Error: loot file not provided\n")
-			cmd.Usage()
-			os.Exit(-1)
+			lootBoxFile = loot.DefaultLootBoxFile
 		}
 		handleVerbose(cmd)
 		if lootBoxFile != "" {
