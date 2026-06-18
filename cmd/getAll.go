@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// getAllCmd represents the fetch command
+// getAllCmd downloads all JS resources in the loot file 
 var getAllCmd = &cobra.Command{
 	Use:     "getall",
 	Aliases: []string{"get-all", "all", "loot"},

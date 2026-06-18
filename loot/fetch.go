@@ -19,42 +19,42 @@ var defaultHeaders = map[string]string{
 	"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:124.0) Gecko/20100101 Firefox/124.0",
 }
 
-func FetchFromFile(filename string, beautify bool) error {
-	exists, err := fileExists(filename)
+func FetchFromFile(lootFilename string, beautify bool) error {
+	exists, err := fileExists(lootFilename)
 	if err != nil {
 		return err
 	}
 	if exists == false {
-		return fmt.Errorf("no such file %s", filename)
+		return fmt.Errorf("no such file %s", lootFilename)
 
 	}
-	files, err := readLinesFromFile(filename)
+	jsUrls, err := readLinesFromFile(lootFilename)
 	if err != nil {
 		return err
 	}
 
-	targetDirectory := filepath.Dir(filename)
-	err = ensureDirectoryExists(targetDirectory)
+	rootDirectory := filepath.Dir(lootFilename)
+	err = ensureDirectoryExists(rootDirectory)
 	if err != nil {
 		return err
 	}
-	FetchAll(files, targetDirectory, beautify)
+	FetchAll(jsUrls, rootDirectory, beautify)
 	return nil
 }
 
-func FetchAll(urls []string, targetDirectory string, beautify bool) {
+func FetchAll(urls []string, rootDirectory string, beautify bool) {
 	doIfVerbose(func() {
-		fmt.Println("Fetching into " + targetDirectory + "...")
+		fmt.Println("Fetching into " + rootDirectory + "...")
 	})
 	for _, file := range urls {
-		Fetch(file, targetDirectory, beautify)
+		Fetch(file, rootDirectory, beautify)
 	}
 	doIfVerbose(func() {
 		fmt.Println("Finished")
 	})
 }
-func Fetch(url string, targetDirectory string, beautify bool) {
-	result, err := fetchInternal(url, targetDirectory, defaultHeaders)
+func Fetch(url string, rootDirectory string, beautify bool) {
+	result, err := fetchInternal(url, rootDirectory, defaultHeaders)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 	} else {
@@ -74,7 +74,8 @@ func Fetch(url string, targetDirectory string, beautify bool) {
 	}
 }
 
-func fetchInternal(urlString string, targetDirectory string, headers map[string]string) (*downloadResult, error) {
+// resolveLocalFile parses urlString and returns the local file path it maps to under rootDirectory (by host), creating that directory if needed
+func resolveLocalFile(urlString string, rootDirectory string) (*url.URL, string, error) {
 	//ensure schema is present
 	if strings.HasPrefix(strings.ToLower(urlString), "https://") == false &&
 		strings.HasPrefix(strings.ToLower(urlString), "http://") == false {
@@ -84,7 +85,7 @@ func fetchInternal(urlString string, targetDirectory string, headers map[string]
 	//parse the URL
 	parsedUrl, err := url.Parse(urlString)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	//create the local filename for it
@@ -92,13 +93,21 @@ func fetchInternal(urlString string, targetDirectory string, headers map[string]
 	if localFileName[0] == '/' {
 		localFileName = localFileName[1:]
 	}
-	localDir := filepath.Join(targetDirectory, parsedUrl.Host)
+	localDir := filepath.Join(rootDirectory, parsedUrl.Host)
 	err = ensureDirectoryExists(localDir)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	localFileName = filepath.Join(localDir, localFileName)
 	absFileName, err := filepath.Abs(localFileName)
+	if err != nil {
+		return nil, "", err
+	}
+	return parsedUrl, absFileName, nil
+}
+
+func fetchInternal(urlString string, rootDirectory string, headers map[string]string) (*downloadResult, error) {
+	parsedUrl, absFileName, err := resolveLocalFile(urlString, rootDirectory)
 	if err != nil {
 		return nil, err
 	}

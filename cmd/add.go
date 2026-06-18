@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// addCmd represents the spot command
+// addCmd just add a given URL to the loof file
 var addCmd = &cobra.Command{
 	Use:   "add [URL1..URLn]",
 	Short: "Appends URLs to a file",
