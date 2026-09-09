@@ -11,10 +11,23 @@ As you browse your target manually, jsloot automatically downloads or collects J
 
 ### Dependencies
 
-To beautify JavaScript files, you'll need [jsbeautifier](https://pypi.org/project/jsbeautifier/). Install it with:
+To beautify JavaScript files, you'll need [jsbeautifier](https://pypi.org/project/jsbeautifier/), which provides the `js-beautify` CLI that `jsloot` shells out to. Install it with:
 
 ```bash
 pip install jsbeautifier
+```
+
+On distros with an externally-managed Python (e.g. Arch), plain `pip install` will refuse to run. Use `pipx` instead:
+
+```bash
+sudo pacman -S python-pipx   # or your distro's equivalent
+pipx install jsbeautifier
+```
+
+`jsloot` finds `js-beautify` via `PATH`, so it must be on the `PATH` of whatever process actually runs `jsloot` — not just your interactive shell. This matters if `jsloot` is invoked from a GUI app (e.g. Caido, see below): `pipx` installs to `~/.local/bin`, which GUI apps launched from a desktop environment typically don't have on `PATH`. If `js-beautify` isn't found from that context, symlink it somewhere that is on the GUI app's `PATH` (commonly `/usr/local/bin`):
+
+```bash
+sudo ln -sf "$(which js-beautify)" /usr/local/bin/js-beautify
 ```
 
 ### Installation
@@ -56,7 +69,8 @@ jsloot getall -f jsloot.txt
 The `store` command reads a single JS file as JSON from stdin and writes it to disk, using the same host-based
 layout `getall` uses when downloading (`<directory>/<host>/<filename>`). It's meant for cases where the content
 was already captured elsewhere (e.g. by a proxy that intercepted the response), so the file ends up on disk
-exactly as if `jsloot` had downloaded it itself, without an extra network request.
+exactly as if `jsloot` had downloaded it itself, without an extra network request. Like `getall`, it beautifies
+the stored file by default; pass `-b=false` to skip beautification.
 
 The JSON must contain:
 - `URL`: the URL the content was downloaded from (used to derive the local path)

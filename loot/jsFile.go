@@ -37,8 +37,9 @@ func validateJSFile(f JSFile) error {
 
 // StoreJSFile writes the JSFile's content to the local path its URL resolves to under rootDirectory,
 // the same path Fetch would have downloaded it to. Returns the path written to.
-// An existing file at that path is overwritten.
-func StoreJSFile(f JSFile, rootDirectory string) (string, error) {
+// An existing file at that path is overwritten. If beautify is true, the stored file is run through
+// js-beautify, the same as Fetch does for downloaded files.
+func StoreJSFile(f JSFile, rootDirectory string, beautify bool) (string, error) {
 	_, absFileName, err := resolveLocalFile(f.URL, rootDirectory)
 	if err != nil {
 		return "", err
@@ -47,6 +48,13 @@ func StoreJSFile(f JSFile, rootDirectory string) (string, error) {
 	err = os.WriteFile(absFileName, []byte(f.Content), 0644)
 	if err != nil {
 		return "", err
+	}
+
+	if beautify {
+		err = beautifyFile(absFileName)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		}
 	}
 	return absFileName, nil
 }

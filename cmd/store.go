@@ -24,12 +24,15 @@ var storeCmd = &cobra.Command{
 			cobra.CheckErr(err)
 		}
 
+		beautify, err := cmd.Flags().GetBool("beautify")
+		cobra.CheckErr(err)
+
 		//Parse the JSFile from JSON
 		jsFile, err := loot.ParseJSFile(os.Stdin)
 		cobra.CheckErr(err)
 
 		//Store the Content
-		fileName, err := loot.StoreJSFile(jsFile, targetDirectory)
+		fileName, err := loot.StoreJSFile(jsFile, targetDirectory, beautify)
 		cobra.CheckErr(err)
 		cmd.Println(fileName)
 	},
@@ -37,4 +40,5 @@ var storeCmd = &cobra.Command{
 
 func init() {
 	storeCmd.Flags().StringP("directory", "d", "", "The output directory")
+	storeCmd.Flags().BoolP("beautify", "b", true, "Beautify the stored JS file")
 }
