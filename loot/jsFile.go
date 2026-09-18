@@ -5,12 +5,20 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 // JSFile is a JavaScript file to store, together with the URL it was downloaded from
 type JSFile struct {
-	URL     string `json:"URL"`
-	Content string `json:"content"`
+	URL         string `json:"URL"`
+	Content     string `json:"content"`
+	ContentType string `json:"contentType,omitempty"`
+}
+
+// looksLikeJS reports whether contentType looks like a JavaScript MIME type
+func looksLikeJS(contentType string) bool {
+	lower := strings.ToLower(contentType)
+	return strings.Contains(lower, "javascript") || strings.Contains(lower, "ecmascript")
 }
 
 // ParseJSFile reads and parses a JSFile as JSON from the given stream
@@ -35,10 +43,9 @@ func validateJSFile(f JSFile) error {
 	return nil
 }
 
-// StoreJSFile writes the JSFile's content to the local path its URL resolves to under rootDirectory,
-// the same path Fetch would have downloaded it to. Returns the path written to.
-// An existing file at that path is overwritten. If beautify is true, the stored file is run through
-// js-beautify, the same as Fetch does for downloaded files.
+// StoreJSFile writes the JSFile's content to the local path its URL resolves to under rootDirectory.
+// Returns the path written to. An existing file at that path is overwritten. If beautify is true and
+// the content type looks like JavaScript (or is unset), the stored file is run through js-beautify.
 func StoreJSFile(f JSFile, rootDirectory string, beautify bool) (string, error) {
 	_, absFileName, err := resolveLocalFile(f.URL, rootDirectory)
 	if err != nil {
@@ -50,7 +57,7 @@ func StoreJSFile(f JSFile, rootDirectory string, beautify bool) (string, error) 
 		return "", err
 	}
 
-	if beautify {
+	if beautify && (f.ContentType == "" || looksLikeJS(f.ContentType)) {
 		err = beautifyFile(absFileName)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)

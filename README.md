@@ -1,11 +1,13 @@
 # jsloot 🐿
 
-`jsloot` is a handy tool designed to download and beautify JavaScript files, often used alongside your favorite offensive web proxy.
+`jsloot` is a handy tool designed to store and beautify JavaScript files captured by your favorite offensive web proxy.
 
 ## Purpose
 
-The main goal of `jsloot` is to collect, download, and beautify JavaScript files while manually investigating a target with a web proxy. 
-As you browse your target manually, jsloot automatically downloads or collects JavaScript URLs to a local file, making them ready for further investigation.
+The main goal of `jsloot` is to collect and beautify JavaScript (and, if the feeding proxy chooses to also
+pass along HTML responses, whole HTML pages) while manually investigating a target with a web proxy.
+`jsloot` itself does no fetching or parsing — it just stores whatever content it's handed and, if that
+content looks like JavaScript, beautifies it.
 
 ## Setup
 
@@ -38,49 +40,36 @@ go install github.com/bl155x0/jsloot@latest
 
 ### Caido
 
-To seamlessly integrate `jsloot` with Caido, install one, or all of the following passive Workflows to your Caido project:
+To seamlessly integrate `jsloot` with Caido, install the following passive Workflow to your Caido project:
 
 https://github.com/bl155x0/caido/tree/main/workflows/passive/JSLoot
 
 
 # Usage
-`jsloot` offers various distinct sub-commands:
 
-
-### `add`
-The `add` command is used to collect JavaScript URLs while investigating a target with a proxy tool like Caido. 
-It appends JavaScript URLs to a text file (jsloot.txt).
-
-```bash
-jsloot add -f jsloot.txt "http://example.com/example.js"
-```
-If the [JSLootAdd](https://github.com/bl155x0/caido/blob/main/workflows/passive/JSLoot/JSLootAdd.json) Caido passive Workflow is installed (see [Caido](#Caido)), this command is executed automatically,
-for every recognized JavaScript file while browsing your target with Caido.
-
-### `getall`
-
-The `getall` command downloads and beautifies all collected JavaScript URLs from a given file into to a local folder.
-``` bash
-jsloot getall -f jsloot.txt
-```
+`jsloot` has a single sub-command:
 
 ### `store`
 
-The `store` command reads a single JS file as JSON from stdin and writes it to disk, using the same host-based
-layout `getall` uses when downloading (`<directory>/<host>/<filename>`). It's meant for cases where the content
-was already captured elsewhere (e.g. by a proxy that intercepted the response), so the file ends up on disk
-exactly as if `jsloot` had downloaded it itself, without an extra network request. Like `getall`, it beautifies
-the stored file by default; pass `-b=false` to skip beautification.
+The `store` command reads a single file as JSON from stdin and writes it to disk under a host-based
+layout (`<directory>/<host>/<filename>`, filename taken from the URL's path). It's meant for content
+already captured elsewhere (e.g. by a proxy that intercepted the response), so the file ends up on disk
+without jsloot making any network request of its own.
 
 The JSON must contain:
-- `URL`: the URL the content was downloaded from (used to derive the local path)
-- `content`: the JavaScript source to store
+- `URL`: the URL the content was captured from (used to derive the local path)
+- `content`: the content to store
+- `contentType` (optional): the response's Content-Type. If given and it doesn't look like
+  JavaScript (`text/javascript`, `application/javascript`, ...), beautification is skipped for that
+  file even if `-b`/beautify is on — running the JS beautifier on non-JS content (e.g. HTML) corrupts
+  it. If omitted, the file is always beautified when `-b` is on (legacy behaviour).
 
 ```bash
-echo '{"URL": "https://www.example.com/example.js", "content": "var x = 1;"}' | jsloot store -d /tmp/jsloot
+echo '{"URL": "https://www.example.com/example.js", "content": "var x = 1;", "contentType": "text/javascript"}' | jsloot store -d /tmp/jsloot
 ```
 
-An existing file at the resolved path is overwritten.
+Beautification is on by default; pass `-b=false` to skip it unconditionally. An existing file at the
+resolved path is overwritten.
 
 <br>
 <hr>

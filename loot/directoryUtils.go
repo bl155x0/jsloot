@@ -16,16 +16,6 @@ func directoryExists(filename string) (bool, error) {
 	return stat.IsDir(), nil
 }
 
-// ensureEndsWithPathSeparator reports the given path back while makeing sure it ends with a path separator
-func ensureEndsWithPathSeparator(path string) string {
-	// Check if the path already ends with os.PathSeparator
-	if len(path) == 0 || path[len(path)-1] != os.PathSeparator {
-		// If not, add os.PathSeparator to the end of the path
-		path += string(os.PathSeparator)
-	}
-	return path
-}
-
 // ensureDirectoryExists creates the given directory if not already present
 func ensureDirectoryExists(dir string) error {
 	fileExists, err := fileExists(dir)

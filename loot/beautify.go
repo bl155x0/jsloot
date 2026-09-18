@@ -13,11 +13,6 @@ const (
 	beautifyCommand = "js-beautify"
 )
 
-func beautfyExists() bool {
-	_, err := exec.LookPath(beautifyCommand)
-	return err == nil
-}
-
 func beautifyFile(file string) error {
 	doIfVerbose(func() {
 		fmt.Printf("beautifying %s\n", filepath.Base(file))
