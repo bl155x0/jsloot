@@ -21,9 +21,12 @@ func resolveLocalFile(urlString string, rootDirectory string) (*url.URL, string,
 	}
 
 	//create the local filename for it
+	//a directory-style URL carries no file name of its own, so it gets the implicit index
+	//document - filepath.Base would return "/" for the root path, "." for an empty one and
+	//the last path segment for a trailing slash, none of which is the name of what we fetched
 	localFileName := filepath.Base(parsedUrl.Path)
-	if localFileName[0] == '/' {
-		localFileName = localFileName[1:]
+	if localFileName == "/" || localFileName == "." || strings.HasSuffix(parsedUrl.Path, "/") {
+		localFileName = "index.html"
 	}
 	localDir := filepath.Join(rootDirectory, parsedUrl.Host)
 	err = ensureDirectoryExists(localDir)
